@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "plugins": [
+    {
+      "id": "agent-base",
+      "name": "Agent Base",
+      "kind": "base",
+      "version": "0.9.0",
+      "description": "Shared agent session core: live/proc/tty, naming, last-resume markers, actions",
+      "entry": "_base.html",
+      "depends": {},
+      "package": {
+        "url": "packages/agent-base-0.9.0.tar.gz",
+        "sha256": "8e2ef1ae50448007ee502400c8ed31378d95054300027f03c62616a6c90b54d9",
+        "size": 24701
+      }
+    },
+    {
+      "id": "agent-monitor",
+      "name": "Agent Monitor",
+      "kind": "plugin",
+      "version": "0.9.0",
+      "description": "Live agent sessions: state, message and hooks",
+      "entry": "home.html",
+      "depends": {
+        "agent-base": "0.9.0"
+      },
+      "package": {
+        "url": "packages/agent-monitor-0.9.0.tar.gz",
+        "sha256": "abb62e91a702c867eaebb6c1fc63930964b4bd2b99d51eb01173dee0d0bba1fb",
+        "size": 16616
+      }
+    },
+    {
+      "id": "agent-summarizer",
+      "name": "Agent Summarizer",
+      "kind": "plugin",
+      "version": "0.9.0",
+      "description": "Per-session summaries written on the host",
+      "entry": "home.html",
+      "depends": {
+        "agent-base": "0.9.0"
+      },
+      "package": {
+        "url": "packages/agent-summarizer-0.9.0.tar.gz",
+        "sha256": "b495289de704a09ee29a04450998e7658d8ae940e67475807bca8c712492a4f0",
+        "size": 14141
+      }
+    },
+    {
+      "id": "git",
+      "name": "Git Repo",
+      "kind": "plugin",
+      "version": "0.9.0",
+      "description": "Working tree, commits and diffs",
+      "entry": "index.html",
+      "depends": {},
+      "package": {
+        "url": "packages/git-0.9.0.tar.gz",
+        "sha256": "eb167e9ba11e36e235de7cac0db1288a03cbae3792fd3b5734d8dcfcdac32919",
+        "size": 25163
+      }
+    },
+    {
+      "id": "sysinfo",
+      "name": "System Monitor",
+      "kind": "plugin",
+      "version": "0.9.0",
+      "description": "CPU, memory, disk and network at a glance",
+      "entry": "index.html",
+      "depends": {},
+      "package": {
+        "url": "packages/sysinfo-0.9.0.tar.gz",
+        "sha256": "39fc82105814e29e1654da9330bbd275425db3ec04c8f6ec98d9517eca0e0e14",
+        "size": 20640
+      }
+    }
+  ]
+}

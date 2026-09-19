@@ -1,0 +1,5 @@
+# Text files come out as LF everywhere (packages are binaries).
+* text=auto eol=lf
+*.tar.gz binary
+*.apk binary
+*.sha256 text eol=lf

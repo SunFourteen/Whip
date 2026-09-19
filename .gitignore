@@ -1,0 +1,9 @@
+# Binaries are attached to GitHub releases, never committed.
+*.apk
+*.aab
+*.sha256
+*.keystore
+*.jks
+
+.DS_Store
+*.swp
