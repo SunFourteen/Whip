@@ -5,74 +5,74 @@
       "id": "agent-base",
       "name": "Agent Base",
       "kind": "base",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "description": "Shared agent session core: live/proc/tty, naming, last-resume markers, actions",
       "entry": "_base.html",
       "depends": {},
       "package": {
-        "url": "packages/agent-base-0.9.0.tar.gz",
-        "sha256": "8e2ef1ae50448007ee502400c8ed31378d95054300027f03c62616a6c90b54d9",
-        "size": 24701
+        "url": "packages/agent-base-0.10.0.tar.gz",
+        "sha256": "98f25735dc7656859951f0947110e805cd8319c588a1fd983059e9bd7d65ce5e",
+        "size": 38099
       }
     },
     {
       "id": "agent-monitor",
       "name": "Agent Monitor",
       "kind": "plugin",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "description": "Live agent sessions: state, message and hooks",
       "entry": "home.html",
       "depends": {
-        "agent-base": "0.9.0"
+        "agent-base": "0.10.0"
       },
       "package": {
-        "url": "packages/agent-monitor-0.9.0.tar.gz",
-        "sha256": "abb62e91a702c867eaebb6c1fc63930964b4bd2b99d51eb01173dee0d0bba1fb",
-        "size": 16616
+        "url": "packages/agent-monitor-0.10.0.tar.gz",
+        "sha256": "1b9ca4a1c46962e732037e95cae7b853105adc08f5cb59c49665f4ac1d8a249e",
+        "size": 16840
       }
     },
     {
       "id": "agent-summarizer",
       "name": "Agent Summarizer",
       "kind": "plugin",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "description": "Per-session summaries written on the host",
       "entry": "home.html",
       "depends": {
-        "agent-base": "0.9.0"
+        "agent-base": "0.10.0"
       },
       "package": {
-        "url": "packages/agent-summarizer-0.9.0.tar.gz",
-        "sha256": "b495289de704a09ee29a04450998e7658d8ae940e67475807bca8c712492a4f0",
-        "size": 14141
+        "url": "packages/agent-summarizer-0.10.0.tar.gz",
+        "sha256": "164d55f0b6f03e0be9dac76c7a9a0c771bf6d9b70ebd56d1a212cbc3b6d1045d",
+        "size": 14367
       }
     },
     {
       "id": "git",
       "name": "Git Repo",
       "kind": "plugin",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "description": "Working tree, commits and diffs",
       "entry": "index.html",
       "depends": {},
       "package": {
-        "url": "packages/git-0.9.0.tar.gz",
-        "sha256": "eb167e9ba11e36e235de7cac0db1288a03cbae3792fd3b5734d8dcfcdac32919",
-        "size": 25163
+        "url": "packages/git-0.10.0.tar.gz",
+        "sha256": "fd74e5af10ad0106de139c73be23cefcf0c18de77b96fc4488ace69bfe4b9584",
+        "size": 27888
       }
     },
     {
       "id": "sysinfo",
       "name": "System Monitor",
       "kind": "plugin",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "description": "CPU, memory, disk and network at a glance",
       "entry": "index.html",
       "depends": {},
       "package": {
-        "url": "packages/sysinfo-0.9.0.tar.gz",
-        "sha256": "39fc82105814e29e1654da9330bbd275425db3ec04c8f6ec98d9517eca0e0e14",
-        "size": 20640
+        "url": "packages/sysinfo-0.10.0.tar.gz",
+        "sha256": "942d628bddb070e096c3f262b792dfdbad509dfa01a1c90d82324fd4532e1eaf",
+        "size": 26181
       }
     }
   ]

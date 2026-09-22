@@ -22,7 +22,7 @@ your-plugin/
   "version": "0.1.0",
   "description": "one line, shown in the plugin list",
   "entry": "index.html",
-  "depends": { "agent-base": "0.9.0" },
+  "depends": { "agent-base": "0.10.0" },
   "setup": {
     "command": "bash install.sh",
     "when": "version",
@@ -36,7 +36,7 @@ your-plugin/
 | --- | --- |
 | `id` | `[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}`, also the directory name on the host |
 | `name` / `description` | shown in the plugin list |
-| `version` | dotted version (`0.9.0`); the app compares it to decide on updates |
+| `version` | dotted version (`0.10.0`); the app compares it to decide on updates |
 | `entry` | page opened from the plugin list |
 | `files[]` | the package contract: exactly what ships — a listed file that is missing fails packaging |
 | `depends` | optional; `pluginId: minimum version`, installed first |
@@ -58,6 +58,7 @@ app fetches the index, verifies each package sha256, unpacks it into
 | Capability | Methods |
 | --- | --- |
 | Command execution | `run(cmd, opts?)` |
+| Host environment | `env()` |
 | Interactive shells | `listShells` `shellWrite` `shellTail` `openTerminalShell` `openShellWith` |
 | Data feeds | `createFeed` `feedVersion` `feedRead` `removeFeed` |
 | State / connection | `getState` `getStateVersion` `isConnected` `getConnection` `getTheme` |
@@ -78,6 +79,69 @@ const r = JSON.parse(SshBridge.run("git -C ~/project status -sb", "{}"));
 - `opts`: `{ timeoutMs?: number (default 8000), cwd?: string }`
 - stdout is capped at 256KB, stderr at 64KB.
 - Judge success by `ok` / `exitCode` / `timedOut`; never match on output text.
+- `cwd` is applied by the app in the host's own syntax, so the command itself stays a
+  plain command line.
+
+### Which shell is on the other end
+
+A plugin runs on whatever host the user connected to, and that host is one of two
+environments. `env()` reports which one, so a plugin can branch once instead of probing:
+
+```js
+const host = JSON.parse(SshBridge.env());
+// { id: "posix"|"windows"|"unknown", label: "Linux/macOS"|"Windows"|"Unknown shell",
+//   posix: boolean, tmux: boolean, home: "/root", pluginsDir: "/root/.whip/plugins" }
+
+const cmd = host.posix ? "uname -a" : "Get-ComputerInfo | Select-Object OsName";
+const r = JSON.parse(SshBridge.run(cmd, "{}"));
+```
+
+| Environment | `run()` executes | `cwd` | `setup.command` | tmux |
+| --- | --- | --- | --- | --- |
+| `posix` | `sh` on Linux/macOS/containers/WSL | `cd <cwd> && <cmd>` | shell script | available |
+| `windows` | PowerShell (`-NoProfile -NonInteractive`) | `Set-Location` | PowerShell | not available |
+| `unknown` | passed through untouched | not applied | as written | not available |
+
+### Two platform files per plugin
+
+A plugin that touches the host shell ships one implementation per platform and picks at
+load time, so the portable part (parsing, rendering, state) never grows a branch:
+
+```text
+my-plugin/
+  platform.posix.js      window.MyPluginPlatformPosix   = { ...same API... }
+  platform.windows.js    window.MyPluginPlatformWindows = { ... }
+  app.js                 var P = pick(window, SshBridge.env()); P.tickCmd(...)
+  index.html             <script src="platform.posix.js"></script>
+                         <script src="platform.windows.js"></script>
+                         <script src="app.js"></script>
+```
+
+Both platform files are listed in `files[]` and loaded on every page; the plugin's shared
+code asks the environment which one to use (`env().id === 'windows'`), and only that one
+is ever executed. `setup` follows the same rule with a per-environment command:
+
+```json
+"setup": {
+  "command": "bash install-monitor.sh",
+  "when": "always",
+  "platforms": ["posix", "windows"],
+  "variants": { "windows": { "command": "& .\\install-monitor.ps1" } }
+}
+```
+
+The installer picks the variant for the connected host, so a POSIX script is never handed
+to PowerShell (and the reverse). A variant that does not exist for this host is reported as
+`state: "skipped"` instead of running something written for another platform.
+
+Rules that hold in both environments:
+
+- Write commands for the `id` you read from `env()`. A POSIX plugin's `ps aux` will fail on
+  Windows, and a Windows plugin's `Get-Process` will fail on Linux.
+- Use `host.home` / `host.pluginsDir` instead of hardcoding `/root` or `C:\Users\...`.
+- `tmux` is only advertised when it exists; `openShellWith` still works without it.
+- The installed plugin files land in `pluginsDir`, whatever the host calls it: the app's own
+  install, sync and setup steps go through the same environment.
 
 ## 2. Interactive shells
 
@@ -188,8 +252,18 @@ SshBridge.tapInstall("agent-monitor");  // requires a connected host
 
 A plugin may declare host-side setup in its manifest (`setup.command`, run in the plugin
 directory on the target host; exit code 0 means success, `setup.when` decides whether it
-runs once per version or on every check). The installer runs it after pull/sync, so the
-host runtime is installed by the installer instead of by the plugin's own JavaScript.
+runs once per version or on every check). The command is written for the host's
+environment — shell script on POSIX, PowerShell on Windows — exactly like `run()`.
+The installer runs it after pull/sync, so the host runtime is installed by the installer
+instead of by the plugin's own JavaScript.
+
+`setup.platforms` (`["posix"]`, `["windows"]`, or omitted for any) keeps a command away
+from a host it was not written for. It matters: `bash install-monitor.sh` handed to
+PowerShell on Windows resolves `bash` to whatever the machine has (WSL, Git Bash) and can
+install into a completely different home directory. When the platform does not match, the
+installer reports `state: "skipped"` instead of running anything. On a Windows host an
+omitted `platforms` means "POSIX" — a package has to opt in with `["windows"]` to have its
+setup run there.
 `pluginSetup` lets a plugin ask for its own setup and render the outcome:
 
 ```js

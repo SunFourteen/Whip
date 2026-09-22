@@ -1,15 +1,19 @@
 # Whip
 
-**Version:** `v0.9.0`
+**Version:** `v0.10.0`
 
 An Android SSH client with a built-in plugin system.
 
 ## Features
 
-- SSH client for Android
-- Extensible plugin system
-- Support for remote and local plugin sources
-- Easy plugin management through the app
+- SSH client for Android: several hosts, several shells per host, tmux sessions
+- Plugins run on the connected host — Linux, macOS or Windows — with their UI on the phone
+- One long-lived command channel per connection, so plugin pages answer immediately instead
+  of paying a shell start-up per command
+- Plugins install from a tap (a static `index.json` plus packages) or from a host you keep
+  yourself
+- In-app plugin manager: install, update, sync with the host, remove
+- Plugin state is kept per host, so the same plugin follows the machine you are connected to
 
 ## Downloads
 
@@ -19,14 +23,14 @@ This repository contains the following components:
 
 Download the latest release:
 
-📦 [whip-0.9.0.apk](https://github.com/SunFourteen/whip/releases/download/v0.9.0/whip-0.9.0.apk)
+📦 [whip-0.10.0.apk](https://github.com/SunFourteen/whip/releases/download/v0.10.0/whip-0.10.0.apk)
 
 ### Plugin Registry
 
 The default plugin registry is available at:
 
 ```text
-https://raw.githubusercontent.com/SunFourteen/whip/v0.9.0/index.json
+https://raw.githubusercontent.com/SunFourteen/whip/v0.10.0/index.json
 ```
 
 To add the registry to Whip:
